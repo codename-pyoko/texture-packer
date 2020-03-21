@@ -55,10 +55,6 @@ func main() {
 		logrus.Fatalf("argument 'out' is missing")
 	}
 
-	if *atlas == "" {
-		logrus.Fatalf("argument 'atlas' is missing")
-	}
-
 	p := packer.NewPacker()
 
 	filepath.Walk(*root, func(path string, info os.FileInfo, err error) error {
@@ -84,8 +80,10 @@ func main() {
 		logrus.Fatalf("failed to save image: %v", err)
 	}
 
-	if err := saveAtlas(*atlas, p.Atlas()); err != nil {
-		logrus.Fatalf("failed to save atlas: %v", err)
+	if *atlas != "" {
+		if err := saveAtlas(*atlas, p.Atlas()); err != nil {
+			logrus.Fatalf("failed to save atlas: %v", err)
+		}
 	}
 
 }
