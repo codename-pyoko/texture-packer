@@ -57,7 +57,12 @@ func main() {
 
 	p := packer.NewPacker()
 
+	logrus.Infof("walking %s", *root)
 	filepath.Walk(*root, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
 		if info.IsDir() {
 			return nil
 		}
@@ -70,6 +75,12 @@ func main() {
 
 		return err
 	})
+
+	if p.Len() == 0 {
+		logrus.Infof("no images found - exiting")
+	}
+
+	logrus.Infof("found %d images", p.Len())
 
 	image, err := p.Pack(packer.PackerOptions{})
 	if err != nil {
